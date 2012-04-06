@@ -1,0 +1,10 @@
+bin/*
+!bin/wget.exe
+!bin/7za.exe
+
+profile/*
+!profile/profile.ps1
+!profile/profile-git.ps1
+!profile/profile-hg.ps1
+!profile/profile-svn.ps1
+!profile/console.config
