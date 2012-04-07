@@ -4,9 +4,9 @@ Push-Location $profileDir
 
 . .\Profile.ps1
 
-Add-Path @("$env:portableroot\bin\msysgit\bin")
+Add-Path @("$($env:portableroot)bin\msysgit\bin")
 
-Import-Module "$env:portableroot\Modules\PoshGit\Posh-Git"
+Import-Module "$($env:portableroot)modules\PoshGit\Posh-Git"
 
 $env:PLINK_PROTOCOL = "ssh"
 

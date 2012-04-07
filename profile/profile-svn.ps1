@@ -4,9 +4,9 @@ Push-Location $profileDir
 
 . .\Profile.ps1
 
-Add-Path @("$env:portableroot\bin\SlikSvn\bin")
+Add-Path @("$($env:portableroot)bin\SlikSvn\bin")
 
-Import-Module "$env:portableroot\Modules\PoshSvn\Posh-Svn"
+Import-Module "$($env:portableroot)modules\PoshSvn\Posh-Svn"
 # Set up a simple prompt, adding the git prompt parts inside git repos
 function prompt {
     # Git Prompt

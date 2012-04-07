@@ -16,14 +16,15 @@ function Remove-Path([string[]] $items) {
 }
 
 Add-Path @(
-  "$env:portableroot\bin" 
-  "$env:portableroot\scripts" 
+  "$($env:portableroot)bin" 
+  "$($env:portableroot)scripts" 
 )
 
-Import-Module "$env:portableroot\modules\PsGet"
-Import-Module "$env:portableroot\modules\Commands"
+Import-Module "$($env:portableroot)modules\PsGet"
+Import-Module "$($env:portableroot)modules\Commands"
 
-Set-Alias zip "7za.exe"
+Set-Alias zip "$($env:portableroot)bin\7za.exe"
+Set-Alias edit "$($env:portableroot)bin\sublime\sublime_text.exe"
 
 function dir   { get-childitem $args -ea silentlycontinue | sort @{e={$_.PSIsContainer}; desc=$true},@{e={$_.Name}; asc=$true} } 
 function dird  { get-childitem $args -ea silentlycontinue | where { $_.PSIsContainer } } 

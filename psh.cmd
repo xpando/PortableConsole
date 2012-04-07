@@ -7,4 +7,4 @@ SET USERPROFILE=%PORTABLEROOT%profile
 SET PSPROFILE=%USERPROFILE%\Profile.ps1
 IF DEFINED %1 SET PROFILE=%1
 
-%SystemRoot%\System32\WindowsPowerShell\v1.0\PowerShell.exe -nologo -noexit -noprofile -executionpolicy bypass -file %PSPROFILE%
+%SystemRoot%\System32\WindowsPowerShell\v1.0\PowerShell.exe -nologo -noexit -noprofile -executionpolicy bypass -file "%PSPROFILE%"
