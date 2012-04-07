@@ -2,26 +2,14 @@
 $profileDir = Split-Path $profile -Parent 
 Push-Location $profileDir
 
-function Add-Path([string[]] $items) {
-  $paths = $env:path -split ";"
-  $items = $items | ? { $paths -notcontains $_ }
-  $paths = $items + $paths
-  $env:path = $paths -join ";"
-}
-
-function Remove-Path([string[]] $items) {
-  $paths = $env:path -split ";"
-  $paths = $paths | ? { $items -notcontains $_ }
-  $env:path = $paths -join ";"
-}
-
-Add-Path @(
-  "$($env:portableroot)bin" 
-  "$($env:portableroot)scripts" 
-)
-
 Import-Module "$($env:portableroot)modules\PsGet"
 Import-Module "$($env:portableroot)modules\Commands"
+
+Add-Path @(
+  "$($env:portableroot)bin"
+  "$($env:portableroot)bin\Sysinternals"
+  "$($env:portableroot)scripts"
+)
 
 Set-Alias zip "$($env:portableroot)bin\7za.exe"
 Set-Alias edit "$($env:portableroot)bin\sublime\sublime_text.exe"

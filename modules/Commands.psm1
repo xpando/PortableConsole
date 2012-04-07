@@ -1,4 +1,17 @@
-﻿function Get-SID([string] $userName) {
+﻿function Add-Path([string[]] $items) {
+  $paths = $env:path -split ";"
+  $items = $items | ? { $paths -notcontains $_ }
+  $paths = $items + $paths
+  $env:path = $paths -join ";"
+}
+
+function Remove-Path([string[]] $items) {
+  $paths = $env:path -split ";"
+  $paths = $paths | ? { $items -notcontains $_ }
+  $env:path = $paths -join ";"
+}
+
+function Get-SID([string] $userName) {
   $u = New-Object System.Security.Principal.NTAccount($userName)
   $sid = $u.Translate([System.Security.Principal.SecurityIdentifier])
   $sid.Value
