@@ -7,6 +7,7 @@ Import-Module "$($env:portableroot)modules\Commands"
 
 Add-Path @(
   "$($env:portableroot)bin"
+  "$($env:portableroot)bin\TCCLE13"
   "$($env:portableroot)bin\Sysinternals"
   "$($env:portableroot)scripts"
 )

@@ -1,3 +1,4 @@
+*.lnk
 bin/*
 !bin/wget.exe
 !bin/7za.exe
