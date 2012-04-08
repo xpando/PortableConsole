@@ -10,3 +10,4 @@ profile/*
 !profile/profile-svn.ps1
 !profile/console.config
 !profile/tcstart.btm
+!profile/tcc.ini
