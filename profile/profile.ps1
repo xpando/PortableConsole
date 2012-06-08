@@ -2,7 +2,6 @@
 $profileDir = Split-Path $profile -Parent 
 Push-Location $profileDir
 
-Import-Module "$($env:portableroot)\modules\PsGet"
 Import-Module "$($env:portableroot)\modules\Commands"
 
 Add-Path @(

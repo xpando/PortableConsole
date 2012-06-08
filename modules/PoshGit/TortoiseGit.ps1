@@ -21,8 +21,7 @@ function tgit {
       $args[1..$args.length] | % { $newArgs += $_ }
     }
       
-    # & $Global:TortoiseGitSettings.TortoiseGitPath $newArgs
-    & TortoiseProc.exe $newArgs
+    & $Global:TortoiseGitSettings.TortoiseGitPath $newArgs
   }
 }
 
