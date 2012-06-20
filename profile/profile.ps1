@@ -11,6 +11,11 @@ Add-Path @(
   "$($env:portableroot)\scripts"
 )
 
+if ((Get-OSArchitecture).Architecture -eq "64-Bit")
+{
+  Add-Path @("$($env:portableroot)\bin\Debug\x64")
+}
+
 Set-Alias zip "$($env:portableroot)\bin\7za.exe"
 Set-Alias edit "$($env:portableroot)\bin\sublime\sublime_text.exe"
 
