@@ -397,7 +397,7 @@ function Format-Color {
           ValueFromPipeline=$true,
           ValueFromPipelineByPropertyName=$true)
       ]
-      [String[]]$Items
+      $Item
     ) 
 
     begin {
@@ -413,28 +413,25 @@ function Format-Color {
           '\.(txt|cfg|conf|ini|csv|log)$', $regex_opts)
     }
     process {
-       foreach($item in $Items)
-       {
-          if ($_.GetType().Name -eq 'DirectoryInfo') {
-            $Host.UI.RawUI.ForegroundColor = 'Blue'
-            echo $_
-            $Host.UI.RawUI.ForegroundColor = $fore
-          } elseif ($compressed.IsMatch($_.Name)) {
-            $Host.UI.RawUI.ForegroundColor = 'DarkCyan'
-            echo $_
-            $Host.UI.RawUI.ForegroundColor = $fore
-          } elseif ($executable.IsMatch($_.Name)) {
-            $Host.UI.RawUI.ForegroundColor = 'Green'
-            echo $_
-            $Host.UI.RawUI.ForegroundColor = $fore
-          } elseif ($text_files.IsMatch($_.Name)) {
-            $Host.UI.RawUI.ForegroundColor = 'Cyan'
-            echo $_
-            $Host.UI.RawUI.ForegroundColor = $fore
-          } else {
-            echo $_
-          }
-       }
+        if ($Item.GetType().Name -eq 'DirectoryInfo') {
+          $Host.UI.RawUI.ForegroundColor = 'Blue'
+          echo $Item
+          $Host.UI.RawUI.ForegroundColor = $fore
+        } elseif ($Item.Name -match '\.(zip|tar|gz|rar)$') {
+          $Host.UI.RawUI.ForegroundColor = 'DarkCyan'
+          echo $_
+          $Host.UI.RawUI.ForegroundColor = $fore
+        } elseif ($Item.Name -match '\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$') {
+          $Host.UI.RawUI.ForegroundColor = 'Green'
+          echo $Item
+          $Host.UI.RawUI.ForegroundColor = $fore
+        } elseif ($Item.Name -match '\.(txt|cfg|conf|ini|csv|log)$') {
+          $Host.UI.RawUI.ForegroundColor = 'Cyan'
+          echo $Item
+          $Host.UI.RawUI.ForegroundColor = $fore
+        } else {
+          echo $Item
+        }
     }
 }
 
