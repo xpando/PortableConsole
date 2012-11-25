@@ -417,15 +417,15 @@ function Format-Color {
           $Host.UI.RawUI.ForegroundColor = 'Blue'
           echo $Item
           $Host.UI.RawUI.ForegroundColor = $fore
-        } elseif ($Item.Name -match '\.(zip|tar|gz|rar)$') {
+        } elseif ($Item.Name -match '(?i)\.(zip|tar|gz|rar)$') {
           $Host.UI.RawUI.ForegroundColor = 'DarkCyan'
           echo $_
           $Host.UI.RawUI.ForegroundColor = $fore
-        } elseif ($Item.Name -match '\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$') {
+        } elseif ($Item.Name -match '(?i)\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$') {
           $Host.UI.RawUI.ForegroundColor = 'Green'
           echo $Item
           $Host.UI.RawUI.ForegroundColor = $fore
-        } elseif ($Item.Name -match '\.(txt|cfg|conf|ini|csv|log)$') {
+        } elseif ($Item.Name -match '(?i)\.(txt|cfg|conf|ini|csv|log)$') {
           $Host.UI.RawUI.ForegroundColor = 'Cyan'
           echo $Item
           $Host.UI.RawUI.ForegroundColor = $fore
