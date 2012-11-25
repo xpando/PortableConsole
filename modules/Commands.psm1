@@ -46,8 +46,17 @@ function Remove-Path([string[]] $items) {
   $env:path = $paths -join ";"
 }
 
-function Get-SID([string] $userName) {
-  $u = New-Object System.Security.Principal.NTAccount($userName)
+function Get-SID {
+    param(  
+      [Parameter(
+          Mandatory=$true, 
+          ValueFromPipeline=$true,
+          ValueFromPipelineByPropertyName=$true)
+      ]
+      [String]$UserName
+    ) 
+
+  $u = New-Object System.Security.Principal.NTAccount($UserName)
   $sid = $u.Translate([System.Security.Principal.SecurityIdentifier])
   $sid.Value
 }
@@ -379,5 +388,57 @@ function Clean-VSProject {
 
   Pop-Location
 }
+
+function Format-Color {
+    param(  
+      [Parameter(
+          Position=0, 
+          Mandatory=$true, 
+          ValueFromPipeline=$true,
+          ValueFromPipelineByPropertyName=$true)
+      ]
+      [String[]]$Items
+    ) 
+
+    begin {
+      $regex_opts = ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase `
+          -bor [System.Text.RegularExpressions.RegexOptions]::Compiled)
+
+      $fore = $Host.UI.RawUI.ForegroundColor
+      $compressed = New-Object System.Text.RegularExpressions.Regex(
+          '\.(zip|tar|gz|rar)$', $regex_opts)
+      $executable = New-Object System.Text.RegularExpressions.Regex(
+          '\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$', $regex_opts)
+      $text_files = New-Object System.Text.RegularExpressions.Regex(
+          '\.(txt|cfg|conf|ini|csv|log)$', $regex_opts)
+    }
+    process {
+       foreach($item in $Items)
+       {
+          if ($_.GetType().Name -eq 'DirectoryInfo') {
+            $Host.UI.RawUI.ForegroundColor = 'Blue'
+            echo $_
+            $Host.UI.RawUI.ForegroundColor = $fore
+          } elseif ($compressed.IsMatch($_.Name)) {
+            $Host.UI.RawUI.ForegroundColor = 'DarkCyan'
+            echo $_
+            $Host.UI.RawUI.ForegroundColor = $fore
+          } elseif ($executable.IsMatch($_.Name)) {
+            $Host.UI.RawUI.ForegroundColor = 'Green'
+            echo $_
+            $Host.UI.RawUI.ForegroundColor = $fore
+          } elseif ($text_files.IsMatch($_.Name)) {
+            $Host.UI.RawUI.ForegroundColor = 'Cyan'
+            echo $_
+            $Host.UI.RawUI.ForegroundColor = $fore
+          } else {
+            echo $_
+          }
+       }
+    }
+}
+
+function dir { get-childitem $args -ea silentlycontinue | sort @{e={$_.PSIsContainer}; desc=$true},@{e={$_.Name}; asc=$true} | format-color } 
+function dird { get-childitem $args -ea silentlycontinue | where { $_.PSIsContainer } | format-color } 
 
 Export-ModuleMember -Function * -Alias *
