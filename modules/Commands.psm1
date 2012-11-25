@@ -358,4 +358,26 @@ function New-AesKey() {
   Write-Output $key
 }
 
+function Clean-VSProject {
+  [cmdletbinding()]
+  param(
+    [parameter(ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)]
+    [string]$path = "."
+  )
+  
+  Push-Location $path
+
+  $vars = Get-ChildItem -recurse | where { $_.GetType().Name.ToString() -eq "DirectoryInfo" -and $_.Name -eq "bin" -or $_.Name -eq "obj" }
+  
+  if ($vars.Length -gt 0) {
+    $vars | %{ Write-Host "Cleaning " $_.FullName }
+    $vars | %{ Remove-Item -recurse -path $_.FullName -force }
+  }
+  else { 
+    Write-Host "Solution is clean"
+  }
+
+  Pop-Location
+}
+
 Export-ModuleMember -Function * -Alias *
