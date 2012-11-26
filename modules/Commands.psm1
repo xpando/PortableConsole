@@ -401,17 +401,9 @@ function Format-Color {
     ) 
 
     begin {
-      $regex_opts = ([System.Text.RegularExpressions.RegexOptions]::IgnoreCase `
-          -bor [System.Text.RegularExpressions.RegexOptions]::Compiled)
-
       $fore = $Host.UI.RawUI.ForegroundColor
-      $compressed = New-Object System.Text.RegularExpressions.Regex(
-          '\.(zip|tar|gz|rar)$', $regex_opts)
-      $executable = New-Object System.Text.RegularExpressions.Regex(
-          '\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$', $regex_opts)
-      $text_files = New-Object System.Text.RegularExpressions.Regex(
-          '\.(txt|cfg|conf|ini|csv|log)$', $regex_opts)
     }
+
     process {
         if ($Item.GetType().Name -eq 'DirectoryInfo') {
           $Host.UI.RawUI.ForegroundColor = 'Blue'
@@ -432,6 +424,10 @@ function Format-Color {
         } else {
           echo $Item
         }
+    }
+
+    end {
+      $Host.UI.RawUI.ForegroundColor = $fore
     }
 }
 
