@@ -389,49 +389,34 @@ function Clean-VSProject {
   Pop-Location
 }
 
-function Format-Color {
-    param(  
-      [Parameter(
-          Position=0, 
-          Mandatory=$true, 
-          ValueFromPipeline=$true,
-          ValueFromPipelineByPropertyName=$true)
-      ]
-      $Item
-    ) 
-
-    begin {
-      $fore = $Host.UI.RawUI.ForegroundColor
-    }
-
-    process {
-        if ($Item.GetType().Name -eq 'DirectoryInfo') {
-          $Host.UI.RawUI.ForegroundColor = 'Blue'
-          echo $Item
-          $Host.UI.RawUI.ForegroundColor = $fore
-        } elseif ($Item.Name -match '(?i)\.(zip|tar|gz|rar)$') {
-          $Host.UI.RawUI.ForegroundColor = 'DarkCyan'
-          echo $_
-          $Host.UI.RawUI.ForegroundColor = $fore
-        } elseif ($Item.Name -match '(?i)\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$') {
-          $Host.UI.RawUI.ForegroundColor = 'Green'
-          echo $Item
-          $Host.UI.RawUI.ForegroundColor = $fore
-        } elseif ($Item.Name -match '(?i)\.(txt|cfg|conf|ini|csv|log)$') {
-          $Host.UI.RawUI.ForegroundColor = 'Cyan'
-          echo $Item
-          $Host.UI.RawUI.ForegroundColor = $fore
-        } else {
-          echo $Item
+filter Add-Color {
+  process {
+    $item = $_
+    
+    if ($_.PSIsContainer) {
+      Add-Member -InputObject $item -MemberType NoteProperty -Name "Color" -Value 'Blue'
+    } else {
+      switch -regex ($_.Name) {
+        '(?ix)\.(7z|zip|tar|gz|rar)$' { 
+          Add-Member -InputObject $item -MemberType NoteProperty -Name "Color" -Value 'DarkGray'
         }
+        '(?ix)\.(exe|bat|cmd|py|pl|ps1|psm1|vbs|rb|reg)$' { 
+          Add-Member -InputObject $item -MemberType NoteProperty -Name "Color" -Value 'Green' 
+        }
+        '(?ix)\.(txt|cfg|conf|ini|csv|log)$' { 
+          Add-Member -InputObject $item -MemberType NoteProperty -Name "Color" -Value 'Cyan' 
+        }
+        default { 
+          Add-Member -InputObject $item -MemberType NoteProperty -Name "Color" -Value 'Gray' 
+        }
+      }
     }
 
-    end {
-      $Host.UI.RawUI.ForegroundColor = $fore
-    }
+    return $item
+  }
 }
 
-function dir { get-childitem $args -ea silentlycontinue | sort @{e={$_.PSIsContainer}; desc=$true},@{e={$_.Name}; asc=$true} | format-color } 
-function dird { get-childitem $args -ea silentlycontinue | where { $_.PSIsContainer } | format-color } 
+function dir { get-childitem $args -ea silentlycontinue | sort @{e={$_.PSIsContainer}; desc=$true},@{e={$_.Name}; asc=$true} | Add-Color } 
+function dird { get-childitem $args -ea silentlycontinue | where { $_.PSIsContainer } | Add-Color } 
 
 Export-ModuleMember -Function * -Alias *
