@@ -16,26 +16,31 @@ function prompt {
     $q = Split-Path $pwd -Qualifier
     $p = Split-Path $pwd -NoQualifier
 
-    Write-Host($q) -nonewline -foregroundcolor green
-    Write-Host($p) -nonewline -foregroundcolor white
+    Write-Host("[") -nonewline -foregroundcolor white
+    Write-Host($q) -nonewline -foregroundcolor darkgray
+    Write-Host($p) -nonewline -foregroundcolor darkgray
+    Write-Host("]") -foregroundcolor white
+    Write-Host("$env:username") -nonewline -foregroundcolor green
+    Write-Host("@") -nonewline -foregroundcolor gray
+    Write-Host("$env:computername") -nonewline -foregroundcolor cyan
     Write-Host("►") -nonewline -foregroundcolor red
       
     return " "
 }
 
-if(-not (Test-Path Function:\DefaultTabExpansion)) {
+if ((Test-Path Function:\TabExpansion)) {
     Rename-Item Function:\TabExpansion DefaultTabExpansion
 }
 
-# Set up tab expansion and include git expansion
+# Set up tab expansion and include svn expansion
 function TabExpansion($line, $lastWord) {
     $lastBlock = [regex]::Split($line, '[|;]')[-1]
     
     switch -regex ($lastBlock) {
-        # Execute git tab completion for all git-related commands
-        '(svn|tsvn) (.*)' { SvnTabExpansion $lastBlock }
+        # svn tab expansion
+        '(svn) (.*)' { SvnTabExpansion($lastBlock) }
         # Fall back on existing tab expansion
-        default { DefaultTabExpansion $line $lastWord }
+        default { if (Test-Path Function:\DefaultTabExpansion) { DefaultTabExpansion $line $lastWord } }
     }
 }
 

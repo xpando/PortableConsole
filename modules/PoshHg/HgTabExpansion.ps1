@@ -12,7 +12,7 @@ function HgTabExpansion($lastBlock) {
    #handles hg update <branch name>
    #handles hg merge <branch name>
    'hg (up|update|merge|co|checkout) (\S*)$' {
-      findBranchOrBookmark($matches[2])
+      findBranchOrBookmarkOrTags($matches[2])
    }
        
    #Handles hg pull -B <bookmark>   
@@ -71,7 +71,7 @@ function HgTabExpansion($lastBlock) {
 }
 
 function hgFiles($filter, $pattern) {
-   hg status | 
+   hg status $(hg root) | 
     foreach { 
       if($_ -match "($pattern){1} (.*)") { 
         $matches[2] 
@@ -134,13 +134,27 @@ function PopulateHgCommands() {
   $script:hgCommands = $hgCommands
 }
 
-function findBranchOrBookmark($filter){
+function findBranchOrBookmarkOrTags($filter){
     hgLocalBranches($filter)
+  hgLocalTags($filter)
     hgLocalBookmarks($filter)
 }
 
 function hgLocalBranches($filter) {
   hg branches -a | foreach {
+    if($_ -match "(\S+) .*") {
+      if($filter -and $matches[1].StartsWith($filter)) {
+        $matches[1]
+      }
+      elseif(-not $filter) {
+        $matches[1]
+      }
+    }
+  }
+}
+
+function hgLocalTags($filter) {
+  hg tags | foreach {
     if($_ -match "(\S+) .*") {
       if($filter -and $matches[1].StartsWith($filter)) {
         $matches[1]
@@ -164,7 +178,7 @@ function bookmarkName($bookmark) {
 }
 
 function hgLocalBookmarks($filter) {
-  hg bookmarks | foreach {
+  hg bookmarks --quiet | foreach {
     if($_ -match "(\S+) .*") {
       $bookmark = bookmarkName($matches[0])  
       if($filter -and $bookmark.StartsWith($filter)) {
@@ -191,21 +205,21 @@ function hgRemoteBookmarks($filter) {
 }
 
 function hgOptions($cmd, $filter) {
-	$optList = @()
-	$output = hg help $cmd
-	foreach($line in $output) {
-		if($line -match '^ ((-\S)|  ) --(\S+) .*$') {
-			$opt = $matches[3]
-			if($filter -and $opt.StartsWith($filter)) {
-				$optList += '--' + $opt.Trim()
-			}
-			elseif(-not $filter) {
-				$optList += '--' + $opt.Trim()
-			}
-		}
-	}
+  $optList = @()
+  $output = hg help $cmd
+  foreach($line in $output) {
+    if($line -match '^ ((-\S)|  ) --(\S+) .*$') {
+      $opt = $matches[3]
+      if($filter -and $opt.StartsWith($filter)) {
+        $optList += '--' + $opt.Trim()
+      }
+      elseif(-not $filter) {
+        $optList += '--' + $opt.Trim()
+      }
+    }
+  }
 
-	$optList | sort
+  $optList | sort
 }
 
 function thgCommands($filter) {
@@ -224,4 +238,34 @@ function thgCommands($filter) {
   }
   
   $cmdList | sort 
+}
+
+if (Get-Command "Register-TabExpansion" -errorAction SilentlyContinue)
+{
+    Register-TabExpansion "hg.exe" -Type Command {
+        param($Context, [ref]$TabExpansionHasOutput, [ref]$QuoteSpaces)  # 1:
+
+        $line = $Context.Line
+        $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
+        $TabExpansionHasOutput.Value = $true
+        HgTabExpansion $lastBlock
+    }
+    return
+}
+
+if (Test-Path Function:\TabExpansion) {
+  Rename-Item Function:\TabExpansion DefaultTabExpansion
+}
+
+# Set up tab expansion and include hg expansion
+function TabExpansion($line, $lastWord) {
+  $lastBlock = [regex]::Split($line, '[|;]')[-1]
+
+  switch -regex ($lastBlock) {
+    "^$(Get-AliasPattern hg) (.*)" { HgTabExpansion $lastBlock }
+    "^$(Get-AliasPattern tgh) (.*)" { HgTabExpansion $lastBlock }
+
+    # Fall back on existing tab expansion
+    default { if (Test-Path Function:\DefaultTabExpansion) { DefaultTabExpansion $line $lastWord } }
+  }
 }

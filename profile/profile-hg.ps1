@@ -17,27 +17,16 @@ function prompt {
     $q = Split-Path $pwd -Qualifier
     $p = Split-Path $pwd -NoQualifier
 
-    Write-Host($q) -nonewline -foregroundcolor green
-    Write-Host($p) -nonewline -foregroundcolor white
+    Write-Host("[") -nonewline -foregroundcolor white
+    Write-Host($q) -nonewline -foregroundcolor darkgray
+    Write-Host($p) -nonewline -foregroundcolor darkgray
+    Write-Host("]") -foregroundcolor white
+    Write-Host("$env:username") -nonewline -foregroundcolor green
+    Write-Host("@") -nonewline -foregroundcolor gray
+    Write-Host("$env:computername") -nonewline -foregroundcolor cyan
     Write-Host("►") -nonewline -foregroundcolor red
       
     return " "
-}
-
-if(-not (Test-Path Function:\DefaultTabExpansion)) {
-    Rename-Item Function:\TabExpansion DefaultTabExpansion
-}
-
-# Set up tab expansion and include hg expansion
-function TabExpansion($line, $lastWord) {
-    $lastBlock = [regex]::Split($line, '[|;]')[-1]
-    
-    switch -regex ($lastBlock) {
-        # mercurial and tortoisehg tab expansion
-        '(hg|thg) (.*)' { HgTabExpansion($lastBlock) }
-        # Fall back on existing tab expansion
-        default { DefaultTabExpansion $line $lastWord }
-    }
 }
 
 Pop-Location

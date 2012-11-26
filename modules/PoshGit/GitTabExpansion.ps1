@@ -202,18 +202,16 @@ function GitTabExpansion($lastBlock) {
 }
 
 if (Test-Path Function:\TabExpansion) {
-    Rename-Item Function:\TabExpansion TabExpansionBackup
+  Rename-Item Function:\TabExpansion DefaultTabExpansion
 }
 
+# Set up tab expansion and include git expansion
 function TabExpansion($line, $lastWord) {
     $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
-
     switch -regex ($lastBlock) {
         # Execute git tab completion for all git-related commands
-        "^$(Get-AliasPattern git) (.*)" { GitTabExpansion $lastBlock }
-        "^$(Get-AliasPattern tgit) (.*)" { GitTabExpansion $lastBlock }
-
+        "$(Get-GitAliasPattern) (.*)" { GitTabExpansion $lastBlock }
         # Fall back on existing tab expansion
-        default { if (Test-Path Function:\TabExpansionBackup) { TabExpansionBackup $line $lastWord } }
+        default { if (Test-Path Function:\DefaultTabExpansion) { DefaultTabExpansion $line $lastWord } }
     }
 }

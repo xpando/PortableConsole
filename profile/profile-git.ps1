@@ -24,31 +24,18 @@ function prompt {
     $q = Split-Path $pwd -Qualifier
     $p = Split-Path $pwd -NoQualifier
 
-    Write-Host($q) -nonewline -foregroundcolor green
-    Write-Host($p) -nonewline -foregroundcolor white
+    Write-Host("[") -nonewline -foregroundcolor white
+    Write-Host($q) -nonewline -foregroundcolor darkgray
+    Write-Host($p) -nonewline -foregroundcolor darkgray
+    Write-Host("]") -foregroundcolor white
+    Write-Host("$env:username") -nonewline -foregroundcolor green
+    Write-Host("@") -nonewline -foregroundcolor gray
+    Write-Host("$env:computername") -nonewline -foregroundcolor cyan
     Write-Host("►") -nonewline -foregroundcolor red
 
     $LASTEXITCODE = $realLASTEXITCODE
       
     return " "
-}
-
-if(Test-Path Function:\TabExpansion) {
-    $teBackup = 'posh-git_DefaultTabExpansion'
-    if(!(Test-Path Function:\$teBackup)) {
-        Rename-Item Function:\TabExpansion $teBackup
-    }
-
-    # Set up tab expansion and include git expansion
-    function TabExpansion($line, $lastWord) {
-        $lastBlock = [regex]::Split($line, '[|;]')[-1].TrimStart()
-        switch -regex ($lastBlock) {
-            # Execute git tab completion for all git-related commands
-            "$(Get-GitAliasPattern) (.*)" { GitTabExpansion $lastBlock }
-            # Fall back on existing tab expansion
-            default { & $teBackup $line $lastWord }
-        }
-    }
 }
 
 Enable-GitColors
