@@ -20,22 +20,26 @@ del alias:dir
 Set-Alias zip "$($env:portableroot)\bin\7za.exe"
 Set-Alias edit "$($env:portableroot)\bin\sublime\sublime_text.exe"
 
-function prompt {
+function common_prompt {
     $q = Split-Path $pwd -Qualifier
     $p = Split-Path $pwd -NoQualifier
 
-    Write-Host($q) -nonewline -foregroundcolor darkgray
-    Write-Host($p) -foregroundcolor darkgray
-    Write-Host("[") -nonewline -foregroundcolor white
-    Write-Host($env:userdomain.ToLower()) -nonewline -foregroundcolor green
-    Write-Host(".") -nonewline -foregroundcolor white
-    Write-Host($env:username.ToLower()) -nonewline -foregroundcolor green
-    Write-Host("@") -nonewline -foregroundcolor white
-    Write-Host($env:computername.ToLower()) -nonewline -foregroundcolor cyan
-    Write-Host("]") -nonewline -foregroundcolor white
-    Write-Host("►") -nonewline -foregroundcolor red
+    Write-Host $q -nonewline -foregroundcolor darkgray
+    Write-Host $p -foregroundcolor darkgray
+    Write-Host "[" -nonewline -foregroundcolor white
+    Write-Host $env:userdomain -nonewline -foregroundcolor green
+    Write-Host "." -nonewline -foregroundcolor white
+    Write-Host $env:username -nonewline -foregroundcolor green
+    Write-Host "@" -nonewline -foregroundcolor white
+    Write-Host $env:computername -nonewline -foregroundcolor cyan
+    Write-Host "]" -nonewline -foregroundcolor white
+    Write-Host "►" -nonewline -foregroundcolor red
 
     return " "
+}
+
+function prompt {
+  return common_prompt
 }
 
 Pop-Location

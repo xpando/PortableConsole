@@ -14,21 +14,7 @@ function prompt {
     $Global:HgStatus = Get-HgStatus
     Write-HgStatus $HgStatus
 
-    $q = Split-Path $pwd -Qualifier
-    $p = Split-Path $pwd -NoQualifier
-
-    Write-Host($q) -nonewline -foregroundcolor darkgray
-    Write-Host($p) -foregroundcolor darkgray
-    Write-Host("[") -nonewline -foregroundcolor white
-    Write-Host($env:userdomain.ToLower()) -nonewline -foregroundcolor green
-    Write-Host(".") -nonewline -foregroundcolor white
-    Write-Host($env:username.ToLower()) -nonewline -foregroundcolor green
-    Write-Host("@") -nonewline -foregroundcolor white
-    Write-Host($env:computername.ToLower()) -nonewline -foregroundcolor cyan
-    Write-Host("]") -nonewline -foregroundcolor white
-    Write-Host("►") -nonewline -foregroundcolor red
-      
-    return " "
+    return common_prompt
 }
 
 Pop-Location
