@@ -24,13 +24,15 @@ function prompt {
     $q = Split-Path $pwd -Qualifier
     $p = Split-Path $pwd -NoQualifier
 
-    Write-Host("[") -nonewline -foregroundcolor white
     Write-Host($q) -nonewline -foregroundcolor darkgray
-    Write-Host($p) -nonewline -foregroundcolor darkgray
-    Write-Host("]") -foregroundcolor white
-    Write-Host("$env:username") -nonewline -foregroundcolor green
-    Write-Host("@") -nonewline -foregroundcolor gray
-    Write-Host("$env:computername") -nonewline -foregroundcolor cyan
+    Write-Host($p) -foregroundcolor darkgray
+    Write-Host("[") -nonewline -foregroundcolor white
+    Write-Host($env:userdomain.ToLower()) -nonewline -foregroundcolor green
+    Write-Host(".") -nonewline -foregroundcolor white
+    Write-Host($env:username.ToLower()) -nonewline -foregroundcolor green
+    Write-Host("@") -nonewline -foregroundcolor white
+    Write-Host($env:computername.ToLower()) -nonewline -foregroundcolor cyan
+    Write-Host("]") -nonewline -foregroundcolor white
     Write-Host("►") -nonewline -foregroundcolor red
 
     $LASTEXITCODE = $realLASTEXITCODE
